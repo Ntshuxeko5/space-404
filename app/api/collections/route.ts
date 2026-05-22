@@ -2,11 +2,18 @@ import { NextResponse } from 'next/server';
 import { prisma } from '../../../lib/prisma';
 import { verifyToken } from '../../../lib/auth';
 
-export async function GET() {
 const p: any = prisma;
 
 export async function GET() {
-  const collections = await p.collection.findMany({ include: { productCollections: { include: { product: true } } } });
+  const collections = await p.collection.findMany({ 
+    include: { 
+      productCollections: { 
+        include: { 
+          product: true 
+        } 
+      } 
+    } 
+  });
   return NextResponse.json(collections);
 }
 

@@ -8,7 +8,7 @@ export async function POST(request: Request) {
   const user = token ? verifyToken(token as string) as any : null;
 
   try {
-    const { items, total, customerEmail } = await request.json();
+    const { items, customerEmail } = await request.json();
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json({ error: 'Invalid items' }, { status: 400 });
