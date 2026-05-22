@@ -53,7 +53,7 @@ export default function LoginPage() {
         <p className="text-[10px] uppercase tracking-[0.3em] text-luxury-brown/40">Secure access to your exclusive collection</p>
       </div>
 
-      <div className="bg-white border border-luxury-brown/10 p-10 shadow-2xl shadow-luxury-brown/5">
+      <div className="bg-black border border-luxury-brown/10 p-10 shadow-2xl shadow-luxury-brown/5">
         <form onSubmit={handleSubmit} className="space-y-8">
           <div>
             <label className="block text-[9px] uppercase tracking-[0.2em] text-luxury-brown/40 mb-3 font-bold">Email Identity</label>

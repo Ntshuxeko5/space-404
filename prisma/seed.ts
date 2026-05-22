@@ -2,19 +2,19 @@ import { prisma } from '../lib/prisma';
 import { hashPassword } from '../lib/auth';
 
 async function main() {
-  const email = 'admin@space404.test';
+  const email = 'ntshuxychabalala5"gmail.com';
   const existing = await prisma.user.findUnique({ where: { email } });
   
   if (!existing) {
     await prisma.user.create({
       data: {
         email,
-        password: hashPassword('AdminPass123!'),
-        name: 'Admin',
+        password: hashPassword('Superman0501!'),
+        name: 'Ntshuxeko',
         isAdmin: true,
       },
     });
-    console.log('Admin user created: admin@space404.test / AdminPass123!');
+    console.log('Admin user created: ntshuxychabalala5@gmail.com / Superman0501!');
   } else {
     console.log('Admin user already exists');
   }
