@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 type Product = {
   id: string;
@@ -174,8 +175,13 @@ export default function AdminProductsPage() {
                 <div className="mt-1 flex flex-col items-center p-6 border-2 border-dashed border-gray-200 rounded-xl hover:border-gray-300 transition-colors">
                   {imageUrl ? (
                     <div className="relative w-full aspect-[3/4] rounded-lg overflow-hidden group">
-                      <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
-                      <button onClick={()=>setImageUrl('')} className="absolute inset-0 bg-black/40 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity font-bold text-xs uppercase tracking-widest">Remove</button>
+                      <Image 
+                        src={imageUrl} 
+                        alt="Preview" 
+                        fill 
+                        className="object-cover" 
+                      />
+                      <button onClick={()=>setImageUrl('')} className="absolute inset-0 bg-black/40 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity font-bold text-xs uppercase tracking-widest z-10">Remove</button>
                     </div>
                   ) : (
                     <div className="text-center">

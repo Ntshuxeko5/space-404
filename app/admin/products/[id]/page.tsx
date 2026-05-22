@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function AdminProductEdit() {
   const params = useParams();
@@ -133,11 +134,16 @@ export default function AdminProductEdit() {
           <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Product Image</label>
           <div className="relative aspect-[3/4] bg-gray-50 rounded-xl overflow-hidden border border-gray-100 group">
             {product.imageUrl ? (
-              <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
+              <Image 
+                src={product.imageUrl} 
+                alt={product.name} 
+                fill 
+                className="object-cover" 
+              />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-[10px] uppercase tracking-widest text-gray-300">No Image</div>
             )}
-            <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
               <label className="cursor-pointer bg-white text-black px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-gray-100 transition-colors">
                 {uploading ? 'Uploading...' : 'Change Image'}
                 <input type="file" className="hidden" onChange={handleUpload} disabled={uploading} accept="image/*" />

@@ -26,7 +26,7 @@ export default function AboutPage() {
         <section>
           <h2 className="text-xl font-serif text-luxury-brown mb-4 uppercase tracking-widest">The Vault</h2>
           <p>
-            We operate on a "drop" philosophy. Items are released in limited quantities, ensuring that once a piece enters your collection, it remains a rare artifact of style. We do not mass-produce; we curate.
+            We operate on a &quot;drop&quot; philosophy. Items are released in limited quantities, ensuring that once a piece enters your collection, it remains a rare artifact of style. We do not mass-produce; we curate.
           </p>
         </section>
       </div>
