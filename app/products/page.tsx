@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useCartStore } from '../store/cart';
 import { PlusIcon, MagnifyingGlassIcon, FunnelIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
@@ -21,7 +22,11 @@ type Collection = {
   slug: string;
 };
 
-export default function ProductsPage() {
+function ProductsContent() {
+  const searchParams = useSearchParams();
+  const initialCategory = searchParams.get('category') || '';
+  const initialCollection = searchParams.get('collection') || '';
+
   const addItem = useCartStore((state) => state.addItem);
   const [products, setProducts] = useState<Product[]>([]);
   const [collections, setCollections] = useState<Collection[]>([]);
@@ -30,9 +35,16 @@ export default function ProductsPage() {
 
   // Filter states
   const [search, setSearch] = useState('');
-  const [selectedCollection, setSelectedCollection] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [showFilters, setShowFilters] = useState(false);
+  const [selectedCollection, setSelectedCollection] = useState(initialCollection);
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+  const [showFilters, setShowFilters] = useState(!!initialCategory || !!initialCollection);
+
+  // Update filters if URL params change
+  useEffect(() => {
+    if (initialCategory) setSelectedCategory(initialCategory);
+    if (initialCollection) setSelectedCollection(initialCollection);
+    if (initialCategory || initialCollection) setShowFilters(true);
+  }, [initialCategory, initialCollection]);
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
@@ -230,7 +242,7 @@ export default function ProductsPage() {
                         className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-[10px] uppercase tracking-[0.2em] text-luxury-brown/20">
+                      <div className="w-full h-full flex items-center justify-center text-[10px] uppercase tracking-[0.3em] text-luxury-brown/20">
                         Image Pending
                       </div>
                     )}
@@ -275,5 +287,18 @@ export default function ProductsPage() {
         </>
       )}
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 flex flex-col items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-luxury-red mb-4"></div>
+        <p className="text-[10px] uppercase tracking-[0.3em] text-luxury-brown/40">Syncing Collection...</p>
+      </div>
+    }>
+      <ProductsContent />
+    </Suspense>
   );
 }
