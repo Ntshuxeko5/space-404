@@ -4,11 +4,16 @@ import Link from 'next/link';
 import { ShoppingCartIcon, UserIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useState, useEffect } from 'react';
 import { useCartStore } from '../store/cart';
+import { useUserStore } from '../store/user';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  
   const items = useCartStore((state) => state.items);
+  const { user, logout } = useUserStore();
+  
   const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   useEffect(() => {
@@ -66,10 +71,51 @@ export default function Header() {
           </div>
 
           <div className="flex items-center space-x-6">
-            <Link href="/admin/dashboard" className="hidden sm:block p-2 hover:text-luxury-red transition-colors group relative">
-              <UserIcon className="h-5 w-5" />
-              <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-black text-[8px] uppercase tracking-widest px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Vault Control</span>
-            </Link>
+            <div className="relative" onMouseEnter={() => setShowUserMenu(true)} onMouseLeave={() => setShowUserMenu(false)}>
+              <Link href={user ? (user.isAdmin ? "/admin/dashboard" : "/account") : "/login"} className="p-2 hover:text-luxury-red transition-colors group relative block">
+                <UserIcon className="h-5 w-5" />
+                {user && (
+                  <span className="absolute -top-1 -right-1 bg-luxury-red w-2 h-2 rounded-full border border-luxury-brown"></span>
+                )}
+              </Link>
+
+              {/* User Dropdown */}
+              <div className={`absolute top-full right-0 mt-2 w-48 bg-luxury-brown border border-luxury-cream/10 transition-all duration-300 ${showUserMenu ? 'opacity-100 translate-y-0 visible' : 'opacity-0 translate-y-2 invisible'}`}>
+                <div className="py-2">
+                  {user ? (
+                    <>
+                      <div className="px-6 py-3 border-b border-luxury-cream/5">
+                        <p className="text-[8px] uppercase tracking-widest text-luxury-cream/40 mb-1">Identity</p>
+                        <p className="text-[10px] font-bold truncate">{user.name || user.email}</p>
+                      </div>
+                      {user.isAdmin && (
+                        <Link href="/admin/dashboard" className="block px-6 py-3 text-[9px] uppercase tracking-widest hover:bg-luxury-cream/5 hover:text-luxury-red transition-colors">
+                          Vault Control
+                        </Link>
+                      )}
+                      <Link href="/account" className="block px-6 py-3 text-[9px] uppercase tracking-widest hover:bg-luxury-cream/5 hover:text-luxury-red transition-colors">
+                        Acquisitions
+                      </Link>
+                      <button 
+                        onClick={logout}
+                        className="w-full text-left px-6 py-3 text-[9px] uppercase tracking-widest hover:bg-luxury-cream/5 text-luxury-red transition-colors"
+                      >
+                        Terminate Session
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link href="/login" className="block px-6 py-3 text-[9px] uppercase tracking-widest hover:bg-luxury-cream/5 hover:text-luxury-red transition-colors">
+                        Authorize
+                      </Link>
+                      <Link href="/register" className="block px-6 py-3 text-[9px] uppercase tracking-widest hover:bg-luxury-cream/5 hover:text-luxury-red transition-colors">
+                        Create Identity
+                      </Link>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
             
             <Link href="/cart" className="p-2 hover:text-luxury-red transition-colors relative">
               <ShoppingCartIcon className="h-5 w-5" />
