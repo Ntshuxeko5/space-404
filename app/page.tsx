@@ -1,103 +1,70 @@
-import Image from "next/image";
+import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="relative">
+      {/* Hero section */}
+      <div className="bg-luxury-brown text-luxury-cream min-h-[90vh] flex items-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/hero-pattern.png')] opacity-10"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 text-center relative z-10">
+          <h1 className="text-5xl md:text-7xl font-bold mb-8 tracking-tight">
+            ELEVATE YOUR<br />IDENTITY
+          </h1>
+          <p className="text-xl md:text-2xl mb-12 text-luxury-cream/80 tracking-wide max-w-2xl mx-auto">
+            Discover exclusive streetwear that sets you apart. Each piece is crafted for those who dare to be extraordinary.
+          </p>
+          <Link
+            href="/products"
+            className="inline-block bg-luxury-red text-luxury-cream px-12 py-4 text-lg font-semibold hover:bg-luxury-red-dark transition-colors uppercase tracking-wider"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            Explore Collection
+          </Link>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
+
+      {/* Featured categories */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <h2 className="text-3xl font-bold text-center mb-16 uppercase tracking-wider text-luxury-brown">Featured Collections</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          {[
+            { name: 'Limited Edition', description: 'Exclusive drops that define rarity' },
+            { name: 'Statement Pieces', description: 'Bold designs for the fearless' },
+            { name: 'Essential Luxury', description: 'Elevated everyday wear' }
+          ].map((category) => (
+            <div
+              key={category.name}
+              className="group relative h-96 bg-luxury-brown/5 overflow-hidden border border-luxury-brown/10 hover:border-luxury-red transition-colors duration-300"
+            >
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+                <h3 className="text-2xl font-semibold mb-4 text-luxury-brown uppercase tracking-wider">{category.name}</h3>
+                <p className="text-luxury-brown/70 mb-6">{category.description}</p>
+                <div className="w-12 h-[1px] bg-luxury-red transform origin-left group-hover:scale-x-150 transition-transform"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Features section */}
+      <div className="bg-luxury-cream/20 py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-16 text-center">
+            <div className="p-8">
+              <h3 className="text-xl font-semibold mb-4 text-luxury-brown uppercase tracking-wider">Limited Editions</h3>
+              <p className="text-luxury-brown/70">Each piece is part of an exclusive collection</p>
+            </div>
+            <div className="p-8">
+              <h3 className="text-xl font-semibold mb-4 text-luxury-brown uppercase tracking-wider">Premium Quality</h3>
+              <p className="text-luxury-brown/70">Crafted with exceptional materials</p>
+            </div>
+            <div className="p-8">
+              <h3 className="text-xl font-semibold mb-4 text-luxury-brown uppercase tracking-wider">Global Shipping</h3>
+              <p className="text-luxury-brown/70">Delivered to fashion pioneers worldwide</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

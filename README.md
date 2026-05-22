@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SPACE 404 - Exclusive Streetwear Vault
 
-## Getting Started
+A high-end, luxury streetwear e-commerce platform built with Next.js 15, Prisma, and Tailwind CSS.
 
-First, run the development server:
+## 🚀 Quick Start
 
+### 1. Environment Setup
+Copy the example environment file and fill in your credentials:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env
+```
+Required variables:
+- `DATABASE_URL`: Your PostgreSQL connection string.
+- `JWT_SECRET`: Secret key for admin authentication.
+- `PAYSTACK_SECRET_KEY`: Your Paystack secret key for payments.
+- `NEXT_PUBLIC_BASE_URL`: The URL where your app is hosted.
+
+### 2. Installation
+```bash
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Database Initialization
+```bash
+npx prisma migrate dev
+npm run prisma:seed
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 4. Run Development Server
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🛠 Features
 
-To learn more about Next.js, take a look at the following resources:
+- **Luxury Aesthetic**: Custom-designed UI with a "dark luxury" theme.
+- **Dynamic Collection**: Real-time filtering by category and collection.
+- **Admin Vault**: Polished dashboard for managing inventory, collections, and tracking revenue.
+- **Secure Checkout**: Integrated with Paystack for seamless global payments.
+- **Order Manifest**: Unique order IDs and identity verification for tracking acquisitions.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📦 Deployment & Hosting
 
-## Deploy on Vercel
+This project is optimized for modern cloud hosting.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Recommended: Vercel
+1. Push your code to a GitHub repository.
+2. Connect the repository to [Vercel](https://vercel.com).
+3. Add your environment variables in the Vercel dashboard.
+4. **Build Settings**: Next.js defaults are correct.
+5. **Database**: Use Vercel Postgres or a managed provider like Supabase/Neon.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Production Build
+To test the production build locally:
+```bash
+npm run build
+npm run start
+```
+
+---
+
+## 💳 Payment Flow (Paystack)
+
+1. **Initiation**: Checkout creates an order and redirects the user to the Paystack payment gateway.
+2. **Verification**: After payment, the user is redirected to `/payments/return`, which calls our API to verify the transaction.
+3. **Webhook**: Paystack sends a server-to-server event to `/api/payments/webhook` to ensure the order is marked as paid even if the user closes their browser.
+
+**Local Webhook Testing**:
+Use `ngrok` to expose your local environment:
+```bash
+npx ngrok http 3000
+```
+Set the Paystack Webhook URL to: `https://<your-ngrok-url>/api/payments/webhook`
+
+---
+
+## 🔐 Security
+
+- **Admin Routes**: Protected via JWT verification and server-side middleware.
+- **Environment Safety**: Critical secrets are stored in `.env` and never exposed to the client.
+- **Input Validation**: API routes perform server-side checks for order integrity and price tampering.

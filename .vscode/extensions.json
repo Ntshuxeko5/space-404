@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "Prisma.prisma",
+    "bradlc.vscode-tailwindcss",
+    "eamodio.gitlens",
+    "ms-azuretools.vscode-docker"
+  ]
+}

@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  isAdmin   Boolean  @default(false)
+  orders    Order[]
+  createdAt DateTime @default(now())
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  price       Float
+  imageUrl    String
+  category    String
+  sizes       String[]
+  inStock     Boolean  @default(true)
+  features    String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  orderItems  OrderItem[]
+  productCollections ProductCollection[]
+}
+
+model Order {
+  id         String   @id @default(uuid())
+  user       User?    @relation(fields: [userId], references: [id])
+  userId     String?
+  items      OrderItem[]
+  total      Float
+  paystackRef String?  
+  paid       Boolean  @default(false)
+  paidAt     DateTime?
+  paystackResponse Json?
+  customerEmail String?
+  status     String   @default("pending")
+  createdAt  DateTime @default(now())
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+  size      String
+  quantity  Int
+  price     Float
+}
+
+model Collection {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  productCollections ProductCollection[]
+}
+
+model ProductCollection {
+  id           String   @id @default(uuid())
+  product      Product  @relation(fields: [productId], references: [id])
+  productId    String
+  collection   Collection @relation(fields: [collectionId], references: [id])
+  collectionId String
+  createdAt    DateTime @default(now())
+
+  @@unique([productId, collectionId])
+}
