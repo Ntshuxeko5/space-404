@@ -1,27 +1,18 @@
 "use client";
 
-import React, { useEffect, useState, Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { CheckCircleIcon, XCircleIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
+import React, { useEffect, useState, Suspense, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 
 function PaymentReturnContent() {
   const search = useSearchParams();
-  const router = useRouter();
   const reference = search.get('reference') || '';
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [order, setOrder] = useState<any | null>(null);
 
-  useEffect(() => {
-    if (!reference) {
-      setError('Identity manifest missing');
-      return;
-    }
-    verify();
-  }, [reference]);
-
-  async function verify() {
+  const verify = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch('/api/payments/verify', { 
@@ -42,7 +33,15 @@ function PaymentReturnContent() {
       setError('Verification connection error');
       setLoading(false);
     }
-  }
+  }, [reference]);
+
+  useEffect(() => {
+    if (!reference) {
+      setError('Identity manifest missing');
+      return;
+    }
+    verify();
+  }, [reference, verify]);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-32">

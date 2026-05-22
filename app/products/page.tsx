@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useCartStore } from '../store/cart';
 import { PlusIcon, MagnifyingGlassIcon, FunnelIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import Image from 'next/image';
 
 type Product = {
   id: string;
@@ -236,10 +237,11 @@ function ProductsContent() {
                 >
                   <Link href={`/products/${product.id}`} className="relative aspect-[3/4] bg-luxury-cream/20 overflow-hidden mb-6 block">
                     {product.imageUrl ? (
-                      <img 
+                      <Image 
                         src={product.imageUrl} 
                         alt={product.name}
-                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
+                        fill
+                        className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-[10px] uppercase tracking-[0.3em] text-luxury-brown/20">

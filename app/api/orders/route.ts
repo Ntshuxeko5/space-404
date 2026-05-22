@@ -8,8 +8,7 @@ export async function POST(request: Request) {
   const user = token ? verifyToken(token as string) as any : null;
 
   try {
-    const body = await request.json();
-    const { items, total: clientTotal, customerEmail } = body;
+    const { items, total, customerEmail } = await request.json();
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json({ error: 'Invalid items' }, { status: 400 });
@@ -37,7 +36,7 @@ export async function POST(request: Request) {
       itemsToCreate.push({ productId: it.productId, size: it.size || '', quantity: it.quantity, price });
     }
 
-    // Optionally, you can compare clientTotal and serverTotal. We'll prefer serverTotal to avoid tampering.
+    // Optionally, you can compare total and serverTotal. We'll prefer serverTotal to avoid tampering.
     const finalTotal = serverTotal;
 
     const order = await prisma.order.create({

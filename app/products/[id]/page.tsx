@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useCartStore } from '../../store/cart';
 import { ChevronLeftIcon, SparklesIcon, TruckIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import Image from 'next/image';
 
 type Product = {
   id: string;
@@ -71,10 +72,11 @@ export default function ProductPage({ params }: { params: { id: string } }) {
         {/* Product image */}
         <div className="relative aspect-[3/4] bg-luxury-cream/20 overflow-hidden group">
           {product.imageUrl ? (
-            <img 
+            <Image 
               src={product.imageUrl} 
               alt={product.name}
-              className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000 ease-out transform hover:scale-105"
+              fill
+              className="object-cover grayscale hover:grayscale-0 transition-all duration-1000 ease-out transform hover:scale-105"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-[10px] uppercase tracking-[0.3em] text-luxury-brown/20">

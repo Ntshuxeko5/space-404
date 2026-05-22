@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useCartStore } from '../store/cart';
 import { TrashIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import Image from 'next/image';
 
 type Product = {
   id: string;
@@ -117,7 +118,12 @@ export default function CartPage() {
                 >
                   <Link href={`/products/${item.productId}`} className="flex-shrink-0 w-32 aspect-[3/4] bg-luxury-cream/20 overflow-hidden relative">
                     {product.imageUrl ? (
-                      <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
+                      <Image 
+                        src={product.imageUrl} 
+                        alt={product.name} 
+                        fill
+                        className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500" 
+                      />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-[8px] uppercase tracking-widest text-luxury-brown/20">Pending</div>
                     )}

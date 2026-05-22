@@ -16,13 +16,7 @@ function OrderConfirmationContent() {
   const [error, setError] = useState<string | null>(null);
   const [order, setOrder] = useState<any | null>(null);
 
-  useEffect(() => {
-    if (qOrderId && qEmail) {
-      lookupOrder(qOrderId, qEmail);
-    }
-  }, [qOrderId, qEmail]);
-
-  async function lookupOrder(id = orderId, mail = email) {
+  const lookupOrder = useCallback(async (id = orderId, mail = email) => {
     setError(null);
     if (!id || !mail) return setError('Identity verification required');
 
@@ -43,7 +37,13 @@ function OrderConfirmationContent() {
       setError('Lookup failed');
       setLoading(false);
     }
-  }
+  }, [orderId, email]);
+
+  useEffect(() => {
+    if (qOrderId && qEmail) {
+      lookupOrder(qOrderId, qEmail);
+    }
+  }, [qOrderId, qEmail, lookupOrder]);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-24">

@@ -31,9 +31,9 @@ export default function ShippingPage() {
         </section>
 
         <section>
-          <h2 className="text-xl font-serif text-luxury-brown mb-4 uppercase tracking-widest">Customs & Duties</h2>
+          <h2 className="text-xl font-serif text-luxury-brown mb-4 uppercase tracking-widest">Customs &amp; Duties</h2>
           <p>
-            For international acquisitions, import duties and taxes are the responsibility of the client. These are determined by the destination country's customs authority and must be settled upon arrival.
+            For international acquisitions, import duties and taxes are the responsibility of the client. These are determined by the destination country&apos;s customs authority and must be settled upon arrival.
           </p>
         </section>
 
