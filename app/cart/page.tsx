@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useCartStore } from '../store/cart';
-import { TrashIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
+import { TrashIcon, ShoppingBagIcon, CreditCardIcon, BanknotesIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -21,6 +21,7 @@ export default function CartPage() {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<'paystack' | 'payfast'>('paystack');
 
   const isAuthenticated = typeof window !== 'undefined' && !!localStorage.getItem('token');
 
@@ -207,6 +208,30 @@ export default function CartPage() {
                   </div>
                 )}
 
+                <div>
+                  <label className="block text-[10px] uppercase tracking-[0.2em] text-luxury-brown/50 mb-4 font-bold">
+                    Select Payment Gateway
+                  </label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <button
+                      onClick={() => setPaymentMethod('paystack')}
+                      className={`flex flex-col items-center gap-2 p-4 border-2 transition-all duration-300 ${paymentMethod === 'paystack' ? 'border-luxury-red bg-luxury-cream/10 shadow-lg shadow-luxury-red/10' : 'border-luxury-brown/10 hover:border-luxury-brown/30'}`}
+                    >
+                      <CreditCardIcon className={`h-6 w-6 ${paymentMethod === 'paystack' ? 'text-luxury-red' : 'text-luxury-brown/50'}`} />
+                      <span className={`text-[9px] font-bold uppercase tracking-widest ${paymentMethod === 'paystack' ? 'text-luxury-brown' : 'text-luxury-brown/60'}`}>Paystack</span>
+                      <span className={`text-[8px] uppercase tracking-wider ${paymentMethod === 'paystack' ? 'text-luxury-brown/50' : 'text-luxury-brown/30'}`}>Cards • Bank</span>
+                    </button>
+                    <button
+                      onClick={() => setPaymentMethod('payfast')}
+                      className={`flex flex-col items-center gap-2 p-4 border-2 transition-all duration-300 ${paymentMethod === 'payfast' ? 'border-luxury-red bg-luxury-cream/10 shadow-lg shadow-luxury-red/10' : 'border-luxury-brown/10 hover:border-luxury-brown/30'}`}
+                    >
+                      <BanknotesIcon className={`h-6 w-6 ${paymentMethod === 'payfast' ? 'text-luxury-red' : 'text-luxury-brown/50'}`} />
+                      <span className={`text-[9px] font-bold uppercase tracking-widest ${paymentMethod === 'payfast' ? 'text-luxury-brown' : 'text-luxury-brown/60'}`}>PayFast</span>
+                      <span className={`text-[8px] uppercase tracking-wider ${paymentMethod === 'payfast' ? 'text-luxury-brown/50' : 'text-luxury-brown/30'}`}>SA • ZA Gateway</span>
+                    </button>
+                  </div>
+                </div>
+
                 {error && (
                   <div className="bg-luxury-red/5 p-4 border border-luxury-red/10">
                     <p className="text-[10px] text-luxury-red uppercase tracking-widest text-center">{error}</p>
@@ -233,16 +258,18 @@ export default function CartPage() {
                       if (!order.id) throw new Error(order.error || 'Order creation failed');
 
                       const emailForPayment = isAuthenticated ? (order.customerEmail || '') : email;
-                      const payRes = await fetch('/api/payments/initiate', {
+                      const endpoint = paymentMethod === 'payfast' ? '/api/payments/payfast/initiate' : '/api/payments/initiate';
+                      const payRes = await fetch(endpoint, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ orderId: order.id, email: emailForPayment, amount: total }),
                       });
                       const payData = await payRes.json();
-                      if (payData.authorization_url) {
-                        window.location.href = payData.authorization_url;
+                      const redirectUrl = payData.authorization_url || payData.redirect_url;
+                      if (redirectUrl) {
+                        window.location.href = redirectUrl;
                       } else {
-                        setError('Gateway unavailable. Please try again.');
+                        setError('Gateway unavailable. Please try another method or try again.');
                         setLoading(false);
                       }
                     } catch (err: any) {
@@ -254,11 +281,11 @@ export default function CartPage() {
                   disabled={loading}
                   className="w-full bg-luxury-brown text-luxury-cream py-5 text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-luxury-red transition-all duration-300 disabled:opacity-50 shadow-xl shadow-luxury-brown/10"
                 >
-                  {loading ? 'Processing...' : 'Secure Checkout'}
+                  {loading ? 'Processing...' : `Secure Checkout via ${paymentMethod === 'payfast' ? 'PayFast' : 'Paystack'}`}
                 </button>
                 
                 <p className="text-[9px] text-center text-luxury-brown/40 uppercase tracking-widest leading-relaxed">
-                  Payments secured via Paystack.<br />Global delivery within 5-7 business days.
+                  Payments secured via {paymentMethod === 'payfast' ? 'PayFast' : 'Paystack'}.<br />Global delivery within 5-7 business days.
                 </p>
               </div>
             </div>

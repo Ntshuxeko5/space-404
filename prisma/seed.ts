@@ -2,7 +2,7 @@ import { prisma } from '../lib/prisma';
 import { hashPassword } from '../lib/auth';
 
 async function main() {
-  const email = 'ntshuxychabalala5"gmail.com';
+  const email = 'ntshuxychabalala5@gmail.com';
   const existing = await prisma.user.findUnique({ where: { email } });
   
   if (!existing) {

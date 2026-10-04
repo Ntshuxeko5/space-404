@@ -8,17 +8,29 @@ import Link from 'next/link';
 function PaymentReturnContent() {
   const search = useSearchParams();
   const reference = search.get('reference') || '';
+  const mp = search.get('mp') || '';
+  const provider = search.get('provider') || 'paystack';
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [order, setOrder] = useState<any | null>(null);
+  const [orderProvider, setOrderProvider] = useState<string>('paystack');
 
   const verify = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/payments/verify', { 
-        method: 'POST', 
-        headers: { 'Content-Type': 'application/json' }, 
-        body: JSON.stringify({ reference }) 
+      const payload: any = {};
+      if (provider === 'payfast') {
+        payload.provider = 'payfast';
+        payload.mp = mp;
+      } else {
+        payload.reference = reference;
+      }
+
+      const res = await fetch('/api/payments/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -27,27 +39,37 @@ function PaymentReturnContent() {
         return;
       }
       setOrder(data.order);
+      setOrderProvider(data.provider || provider);
       setLoading(false);
     } catch (err: any) {
       console.error(err);
       setError('Verification connection error');
       setLoading(false);
     }
-  }, [reference]);
+  }, [reference, mp, provider]);
 
   useEffect(() => {
-    if (!reference) {
+    if (provider === 'payfast') {
+      if (!mp) {
+        setError('Transaction manifest missing');
+        return;
+      }
+    } else if (!reference) {
       setError('Identity manifest missing');
       return;
     }
     verify();
-  }, [reference, verify]);
+  }, [reference, mp, provider, verify]);
+
+  const providerLabel = orderProvider === 'payfast' ? 'PayFast' : 'Paystack';
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-32">
       <div className="text-center mb-16">
         <h1 className="text-4xl font-serif text-luxury-brown mb-4">Payment Verification</h1>
-        <p className="text-[10px] uppercase tracking-[0.3em] text-luxury-brown/40">Securing your acquisition details</p>
+        <p className="text-[10px] uppercase tracking-[0.3em] text-luxury-brown/40">
+          Securing your acquisition details via {providerLabel}
+        </p>
       </div>
 
       <div className="max-w-md mx-auto">
@@ -82,6 +104,10 @@ function PaymentReturnContent() {
 
             <div className="space-y-4 mb-10 pb-10 border-b border-luxury-brown/10">
               <div className="flex justify-between text-[10px] uppercase tracking-widest">
+                <span className="text-luxury-brown/40">Provider</span>
+                <span className="text-luxury-brown font-bold">{providerLabel}</span>
+              </div>
+              <div className="flex justify-between text-[10px] uppercase tracking-widest">
                 <span className="text-luxury-brown/40">Acquisition ID</span>
                 <span className="text-luxury-brown font-bold">#{order.id.slice(0, 8)}</span>
               </div>
@@ -98,13 +124,13 @@ function PaymentReturnContent() {
             </div>
 
             <div className="flex flex-col gap-4">
-              <Link 
+              <Link
                 href={`/order/confirmation?id=${order.id}&email=${order.customerEmail || ''}`}
                 className="w-full bg-luxury-brown text-luxury-cream py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-center hover:bg-luxury-red transition-all duration-300 shadow-lg shadow-luxury-brown/10"
               >
                 View Manifest Details
               </Link>
-              <Link 
+              <Link
                 href="/products"
                 className="w-full border border-luxury-brown/10 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-center text-luxury-brown hover:border-luxury-brown transition-all duration-300"
               >
