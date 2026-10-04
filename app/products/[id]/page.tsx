@@ -1,10 +1,16 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { useCartStore } from '../../store/cart';
-import { ChevronLeftIcon, SparklesIcon, TruckIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
-import Link from 'next/link';
-import Image from 'next/image';
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { useCartStore } from "../../store/cart";
+import {
+  ChevronLeftIcon,
+  SparklesIcon,
+  TruckIcon,
+  ShieldCheckIcon,
+} from "@heroicons/react/24/outline";
+import Link from "next/link";
+import Image from "next/image";
 
 type Product = {
   id: string;
@@ -17,28 +23,36 @@ type Product = {
   category?: string;
 };
 
-export default function ProductPage({ params }: { params: { id: string } }) {
+export default function ProductPage() {
+  const params = useParams();
+  const id = params?.id as string;
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const addItem = useCartStore((state) => state.addItem) as (id: string, size: string) => void;
+  const addItem = useCartStore((state) => state.addItem) as (
+    itemId: string,
+    size: string,
+  ) => void;
 
   useEffect(() => {
+    if (!id) return;
     setLoading(true);
-    fetch(`/api/products?id=${params.id}`)
+    fetch(`/api/products?id=${id}`)
       .then((r) => r.json())
       .then((data) => {
         setProduct(data);
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [params.id]);
+  }, [id]);
 
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 flex flex-col items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-luxury-red mb-4"></div>
-        <p className="text-[10px] uppercase tracking-[0.3em] text-luxury-brown/40">Revealing the piece...</p>
+        <p className="text-[10px] uppercase tracking-[0.3em] text-luxury-brown/40">
+          Revealing the piece...
+        </p>
       </div>
     );
   }
@@ -46,15 +60,22 @@ export default function ProductPage({ params }: { params: { id: string } }) {
   if (!product) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 text-center">
-        <h1 className="text-2xl font-serif text-luxury-brown mb-6">Piece Not Found</h1>
-        <Link href="/products" className="text-luxury-red uppercase tracking-widest text-xs hover:underline">Return to Collection</Link>
+        <h1 className="text-2xl font-serif text-luxury-brown mb-6">
+          Piece Not Found
+        </h1>
+        <Link
+          href="/products"
+          className="text-luxury-red uppercase tracking-widest text-xs hover:underline"
+        >
+          Return to Collection
+        </Link>
       </div>
     );
   }
 
   const handleAddToCart = () => {
     if (!selectedSize) {
-      alert('Please select a size to continue');
+      alert("Please select a size to continue");
       return;
     }
     addItem(product.id, selectedSize);
@@ -63,7 +84,10 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-24">
-      <Link href="/products" className="inline-flex items-center gap-2 text-luxury-brown/40 hover:text-luxury-red transition-colors text-[10px] uppercase tracking-[0.2em] mb-12">
+      <Link
+        href="/products"
+        className="inline-flex items-center gap-2 text-luxury-brown/40 hover:text-luxury-red transition-colors text-[10px] uppercase tracking-[0.2em] mb-12"
+      >
         <ChevronLeftIcon className="h-3 w-3" />
         Back to Collection
       </Link>
@@ -72,8 +96,8 @@ export default function ProductPage({ params }: { params: { id: string } }) {
         {/* Product image */}
         <div className="relative aspect-[3/4] bg-luxury-cream/20 overflow-hidden group">
           {product.imageUrl ? (
-            <Image 
-              src={product.imageUrl} 
+            <Image
+              src={product.imageUrl}
               alt={product.name}
               fill
               className="object-cover grayscale hover:grayscale-0 transition-all duration-1000 ease-out transform hover:scale-105"
@@ -107,8 +131,12 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           {/* Size selector */}
           <div className="mb-12">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-[10px] uppercase tracking-[0.2em] text-luxury-brown font-bold">Select Size</h3>
-              <button className="text-[9px] uppercase tracking-widest text-luxury-brown/40 hover:text-luxury-red transition-colors">Size Guide</button>
+              <h3 className="text-[10px] uppercase tracking-[0.2em] text-luxury-brown font-bold">
+                Select Size
+              </h3>
+              <button className="text-[9px] uppercase tracking-widest text-luxury-brown/40 hover:text-luxury-red transition-colors">
+                Size Guide
+              </button>
             </div>
             <div className="flex flex-wrap gap-3">
               {product.sizes.map((size: string) => (
@@ -116,8 +144,8 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                   key={size}
                   className={`w-14 h-14 flex items-center justify-center text-xs transition-all duration-300 border ${
                     selectedSize === size
-                      ? 'border-luxury-brown bg-luxury-brown text-luxury-cream'
-                      : 'border-luxury-brown/10 hover:border-luxury-brown text-luxury-brown'
+                      ? "border-luxury-brown bg-luxury-brown text-luxury-cream"
+                      : "border-luxury-brown/10 hover:border-luxury-brown text-luxury-brown"
                   }`}
                   onClick={() => setSelectedSize(size)}
                 >
@@ -139,25 +167,36 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-10 border-t border-luxury-brown/10">
             <div className="flex flex-col items-center text-center">
               <SparklesIcon className="h-5 w-5 text-luxury-red mb-3" />
-              <p className="text-[9px] uppercase tracking-widest text-luxury-brown/60">Limited Release</p>
+              <p className="text-[9px] uppercase tracking-widest text-luxury-brown/60">
+                Limited Release
+              </p>
             </div>
             <div className="flex flex-col items-center text-center">
               <TruckIcon className="h-5 w-5 text-luxury-red mb-3" />
-              <p className="text-[9px] uppercase tracking-widest text-luxury-brown/60">Global Express</p>
+              <p className="text-[9px] uppercase tracking-widest text-luxury-brown/60">
+                Global Express
+              </p>
             </div>
             <div className="flex flex-col items-center text-center">
               <ShieldCheckIcon className="h-5 w-5 text-luxury-red mb-3" />
-              <p className="text-[9px] uppercase tracking-widest text-luxury-brown/60">Secure Checkout</p>
+              <p className="text-[9px] uppercase tracking-widest text-luxury-brown/60">
+                Secure Checkout
+              </p>
             </div>
           </div>
 
           {/* Features */}
           {product.features && product.features.length > 0 && (
             <div className="mt-16 bg-luxury-cream/5 p-8 border border-luxury-brown/5">
-              <h3 className="text-[10px] uppercase tracking-[0.2em] text-luxury-brown font-bold mb-6">Product Details</h3>
+              <h3 className="text-[10px] uppercase tracking-[0.2em] text-luxury-brown font-bold mb-6">
+                Product Details
+              </h3>
               <ul className="space-y-4">
                 {product.features.map((feature: string) => (
-                  <li key={feature} className="flex items-start gap-3 text-[11px] text-luxury-brown/70 font-light">
+                  <li
+                    key={feature}
+                    className="flex items-start gap-3 text-[11px] text-luxury-brown/70 font-light"
+                  >
                     <span className="w-1.5 h-1.5 rounded-full bg-luxury-red mt-1.5 flex-shrink-0"></span>
                     {feature}
                   </li>
